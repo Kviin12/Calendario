@@ -5,49 +5,110 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #dcdcdc;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-size: 100px 100px;
+        }
+
+        .header-top {
+            color: #fff;
+        }
+
+        .header {
+    background-color: #b41010;
+    color: #dcdcdc;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    flex-direction: row; /* Mantiene los elementos en fila */
+}
+
+.logo {
+    width: 120px;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    margin-left: 20px; /* Separación del logo con respecto al título */
+}
+
+.header h1 {
+    margin: 0;
+    text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        text-align: center;
+    }
+
+    .logo {
+        margin-left: 0; /* Elimina margen en pantallas pequeñas */
+        margin-top: 10px; /* Añade espacio entre el logo y el título */
+    }
+
+    .header h1 {
+        text-align: center;
+    }
+}
+
+
+        .logo:hover {
+            transform: scale(1.95);
+        }
+
+        .main-content {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .footer {
+            background-color: #b41010;
+            color: #dcdcdc;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
         }
 
         #calendar {
             width: 70%;
-            margin: 20px;
-            border-collapse: collapse;
-            display: inline-block;
             background-color: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        #header {
-            text-align: center;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            border-color: #333;
         }
 
         #months {
             display: flex;
             flex-wrap: wrap;
+            gap: 20px;
         }
 
         .month {
-            width: calc(100% / 3); /* 3 meses por fila */
-            border: 1px solid #ddd;
+            width: calc(33.33% - 14px);
+            border: 1px solid #000000;
             padding: 10px;
             box-sizing: border-box;
-            margin-bottom: 20px;
             border-radius: 8px;
             background-color: #fff;
         }
 
         .month h2 {
             text-align: center;
-            margin-bottom: 10px;
-            color: #333;
+            margin: 0 0 10px 0;
+            color:#9c171a
         }
 
         .weekdays {
@@ -85,26 +146,24 @@
         }
 
         .event {
-            background-color: yellow; /* Color de ejemplo para eventos */
+            color: white;
+            font-weight: bold;
         }
 
-        /* Estilos para la sección de eventos */
         #events-section {
             width: 25%;
             padding: 20px;
-            background-color: #f4f4f4;
-            border-left: 2px solid #ddd;
-            display: inline-block;
-            vertical-align: top;
+            background-color: #fff;
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-left: 20px;
-            box-sizing: border-box;
-            height: auto;
+            height: fit-content;
         }
 
         #events-section h2 {
             text-align: center;
             color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
 
         .event-info {
@@ -115,6 +174,12 @@
             align-items: center;
             background-color: #fff;
             border-radius: 4px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .event-info:hover {
+            transform: translateX(5px);
         }
 
         .event-color {
@@ -131,23 +196,30 @@
     </style>
 </head>
 <body>
-    <div id="calendar">
-        <div id="header">
-            <h1>Calendario 2025</h1>
+    <div class="header-top">
+        <p>-</p>
+    </div>
+    <div class="header">
+        <img src="./imagenes/Logo Feeds.jpg" alt="Logo" class="logo"> <!-- Ajustado el margen izquierdo -->
+        <h1>Calendario Feeds 2025</h1>
+    </div>
+
+    <div class="main-content">
+        <div id="calendar">
+            <div id="months"></div>
         </div>
-        <div id="months">
+
+        <div id="events-section">
+            <h2>Programas con Eventos</h2>
+            <div id="event-list"></div>
         </div>
     </div>
 
-    <div id="events-section">
-        <h2>Información de Eventos</h2>
-        <div id="event-list">
-            <!-- Los eventos se generarán aquí dinámicamente -->
-        </div>
+    <div class="footer">
+        <p>© 2025 Todos los derechos reservados</p>
     </div>
 
     <script>
-        const calendar = document.getElementById('calendar');
         const monthsContainer = document.getElementById('months');
         const eventListContainer = document.getElementById('event-list');
 
@@ -158,48 +230,35 @@
 
         const events = [
             { name: 'Contaduría Pública', dates: ['2025-03-04'], details: {
-                callForPapers: 'Por definir', withAllies: 'Colegio de Contadores Públicos de Colombia', place: 'Por definir' }, color: 'red' },
-               { name: 'Contaduría Pública', dates: ['2025-11-04', '2025-11-05', '2025-11-06', '2025-11-07'], details: {
+                callForPapers: 'Por definir', withAllies: 'Colegio de Contadores Públicos de Colombia', place: 'Por definir'}, color: 'red' },
+            { name: 'Contaduría Pública', dates: ['2025-11-04', '2025-11-05', '2025-11-06', '2025-11-07'], details: {
                 callForPapers: 'Celebración de los 50 años del Programa y II Congreso Internacional de Investigación', withAllies: 'Entes gremiales, de gobierno y patrocinadores', place: 'Por definir' }, color: 'red' },
-
-
-
             { name: 'Economía', dates: ['2025-03-07'], details: {
                 callForPapers: 'Por definir', withAllies: 'Por definir', place: 'Por definir' }, color: 'green' },
-                
             { name: 'Administración de Empresas', dates: ['2025-05-19', '2025-05-20', '2025-05-21', '2025-05-22', '2025-05-23'], details: {
                 callForPapers: 'Encuentro de Investigación formativa', withAllies: 'Por definir', place: 'Por definir' }, color: 'blue' },
-                { name: 'Administración de Empresas', dates: ['2025-02-20'], details: {
-                    callForPapers: 'Diálogo Área de Mercadeo: El Poder de la Marca Personal para Triunfar', withAllies: 'Empresarios', place: 'Por definir' }, color: 'blue' },
-
-
+            { name: 'Administración de Empresas', dates: ['2025-02-20'], details: {
+                callForPapers: 'Diálogo Área de Mercadeo: El Poder de la Marca Personal para Triunfar', withAllies: 'Empresarios', place: 'Por definir' }, color: 'blue' },
             { name: 'Finanzas y Comercio Internacional', dates: ['2025-05-07', '2025-05-08'], details: {
                 callForPapers: '21 de febrero', withAllies: 'CCCE, Fidubogota, Escuela de Humanidades y Estudios Sociales', place: 'Por definir' }, color: 'yellow' },
-                { name: 'Finanzas y Comercio Internacional', dates: ['2025-02-25'], details: {
-                    callForPapers: 'Aprender es invertir en tu futuro - Empoderando a los colombianos a través del conocimiento sobre el mercado de capitales', withAllies: 'Bolsa de Valores de Colombia, la SFC, Asobolsa y AMV', place: 'Auditorio Hno. Martin Carlos  horario de 8:00 a.m. a 10:00 p.m' }, color: 'yellow' },
-
-
+            { name: 'Finanzas y Comercio Internacional', dates: ['2025-02-25'], details: {
+                callForPapers: 'Aprender es invertir en tu futuro - Empoderando a los colombianos a través del conocimiento sobre el mercado de capitales', withAllies: 'Bolsa de Valores de Colombia, la SFC, Asobolsa y AMV', place: 'Auditorio Hno. Martin Carlos  horario de 8:00 a.m. a 10:00 p.m' }, color: 'yellow' },
             { name: 'Gobierno y Asuntos Públicos', dates: ['2025-10-15', '2025-10-16'], details: {
                 callForPapers: 'Seminario diversidades', withAllies: 'Por definir', place: 'Por definir' }, color: 'purple' },
-
             { name: 'Negocios y Relaciones Internacionales (presencial y virtual)', dates: ['2025-10-15', '2025-10-16'], details: {
                 callForPapers: 'Seminario diversidades', withAllies: 'Por definir', place: 'Por definir' }, color: 'orange' },
-
             { name: 'Maestría en Política y Relaciones Internacionales', dates: ['2025-10-15', '2025-10-16'], details: {
                 callForPapers: 'Seminario diversidades', withAllies: 'Por definir', place: 'Por definir' }, color: 'cyan' },
-
             { name: 'Maestría en Estudios Globales y Cooperación Internacional', dates: ['2025-10-15', '2025-10-16'], details: {
                 callForPapers: 'Seminario diversidades', withAllies: 'Por definir', place: 'Por definir' }, color: 'magenta' },
-
             { name: 'Doctorado en Estudios del Desarrollo y Territorio', dates: ['2025-08-13', '2025-08-14'], details: {
                 callForPapers: 'III Congreso Interncacional de Estudios Sociales  Financieros E Internacionales ESFI', withAllies: 'Por definir', place: 'Por definir' }, color: 'brown' },
-
             { name: 'Maestría en Políticas Públicas', dates: ['2025-02-07'], details: {
                 callForPapers: 'Por definir', withAllies: 'Apertura de los posgrados ', place: 'Por definir' }, color: 'teal' },
-                { name: 'Maestría en Políticas Públicas', dates: ['2025-03-21'], details: {
-                    callForPapers: 'Por definir', withAllies: 'Ciclo de conferencia ', place: 'Por definir' }, color: 'teal' },
-                    { name: 'Maestría en Políticas Públicas', dates: ['2025-05-23'], details: {
-                        callForPapers: 'Por definir', withAllies: 'Conferencia con la Contraloría ', place: 'Por definir' }, color: 'teal' }
+            { name: 'Maestría en Políticas Públicas', dates: ['2025-03-21'], details: {
+                callForPapers: 'Por definir', withAllies: 'Ciclo de conferencia ', place: 'Por definir' }, color: 'teal' },
+            { name: 'Maestría en Políticas Públicas', dates: ['2025-05-23'], details: {
+                callForPapers: 'Por definir', withAllies: 'Conferencia con la Contraloría ', place: 'Por definir' }, color: 'teal' }
         ];
 
         function createCalendar(year) {
@@ -275,7 +334,6 @@
         function createEventList() {
             const eventsGroupedByName = {};
 
-            // Agrupar los eventos por su nombre
             events.forEach(event => {
                 if (!eventsGroupedByName[event.name]) {
                     eventsGroupedByName[event.name] = [];
@@ -283,20 +341,18 @@
                 eventsGroupedByName[event.name].push(event);
             });
 
-            // Crear la lista de eventos agrupados
             Object.keys(eventsGroupedByName).forEach(eventName => {
                 const eventDiv = document.createElement('div');
                 eventDiv.classList.add('event-info');
 
                 const eventColorDiv = document.createElement('div');
                 eventColorDiv.classList.add('event-color');
-                eventColorDiv.style.backgroundColor = eventsGroupedByName[eventName][0].color; // Usamos el color del primer evento
+                eventColorDiv.style.backgroundColor = eventsGroupedByName[eventName][0].color;
 
                 const eventNameDiv = document.createElement('div');
                 eventNameDiv.classList.add('event-name');
                 eventNameDiv.textContent = eventName;
 
-                // Mostrar los detalles cuando se haga clic
                 eventNameDiv.addEventListener('click', () => {
                     let message = `${eventName} - Detalles de los eventos:\n\n`;
                     eventsGroupedByName[eventName].forEach(event => {
@@ -319,3 +375,4 @@
     </script>
 </body>
 </html>
+
