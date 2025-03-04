@@ -194,6 +194,65 @@
             font-weight: bold;
             color: #333;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .modal-header {
+            background-color: brown;
+            color: white;
+            padding: 10px;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .modal-table th, .modal-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .modal-table th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -201,7 +260,7 @@
         <p></p>
     </div>
     <div class="header">
-        <img src="./imagenes/Logo Feeds.jpg" alt="Logo" class="logo">
+        <img src="./Img/Logo Feeds.jpg" alt="Logo" class="logo">
         <h1>Calendario Feeds 2025</h1>
     </div>
 
@@ -220,9 +279,23 @@
         <p>© 2025 Todos los derechos reservados</p>
     </div>
 
+    <!-- Modal structure -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>Detalles del Evento</h3>
+            </div>
+            <div id="eventDetails"></div>
+        </div>
+    </div>
+
     <script>
         const monthsContainer = document.getElementById('months');
         const eventListContainer = document.getElementById('event-list');
+        const eventModal = document.getElementById('eventModal');
+        const eventDetails = document.getElementById('eventDetails');
+        const closeModal = document.getElementsByClassName('close')[0];
 
         const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -252,8 +325,12 @@
                 callForPapers: 'Aprender es invertir en tu futuro - Empoderando a los colombianos a través del conocimiento sobre el mercado de capitales', withAllies: 'Bolsa de Valores de Colombia, la SFC, Asobolsa y AMV', place: 'Auditorio Hno. Martin Carlos', Hour: '8:00 a.m. a 10:00 p.m', supportRequired: 'Por Definir' }, color: 'yellow' },
             { name: 'Gobierno y Asuntos Públicos', dates: ['2025-10-15', '2025-10-16'], details: {
                 callForPapers: 'Seminario diversidades', withAllies: 'Por definir', place: 'Por definir', Hour: 'Por Definir', supportRequired: 'Por Definir' }, color: 'purple' },
+
             { name: 'Negocios y Relaciones Internacionales (presencial y virtual)', dates: ['2025-10-15', '2025-10-16'], details: {
                 callForPapers: 'Seminario diversidades', withAllies: 'Por definir', place: 'Por definir', Hour: 'Por Definir', supportRequired: 'Por Definir' }, color: 'orange' },
+            { name: 'Negocios y Relaciones Internacionales (presencial y virtual)', dates: ['2025-03-19'], details: {
+                callForPapers: 'Conversatorio Inaugural del Área de Negocios, Política y Estudios Globales El Estado del Mundo: Crisis Geopolítica Global', withAllies: '<strong>César Niño</strong>: PhD y Magister Seguridad y Defensa Nacional Profesor Unisalle, <strong>Armando Borrero</strong>: Panelista invitado Experto en Defensa y Seguridad Nacional, <strong>Angela Pinto</strong>: Moderadora Magister Estudios Internacionales Profesora Unisalle', place: 'Por definir', Hour: 'Por Definir', supportRequired: 'Por Definir' }, color: 'orange' },
+
             { name: 'Maestría en Política y Relaciones Internacionales', dates: ['2025-10-15', '2025-10-16'], details: {
                 callForPapers: 'Seminario diversidades', withAllies: 'Por definir', place: 'Por definir', Hour: 'Por Definir', supportRequired: 'Por Definir' }, color: 'cyan' },
             { name: 'Maestría en Estudios Globales y Cooperación Internacional', dates: ['2025-10-15', '2025-10-16'], details: {
@@ -317,15 +394,26 @@
 
                             dayDiv.addEventListener('click', () => {
                                 const eventsOnDay = events.filter(event => event.dates.includes(dateString));
-                                let message = `Eventos el ${dateString}:\n`;
+                                let message = `<h3>Eventos el ${dateString}:</h3>`;
                                 if (eventsOnDay.length > 0) {
+                                    message += '<table class="modal-table">';
+                                    message += '<tr><th>Evento</th><th>Llamado a ponencia</th><th>Desarrollo con aliados</th><th>Lugar</th><th>Hora</th><th>Soporte requerido</th></tr>';
                                     eventsOnDay.forEach(event => {
-                                        message += `${event.name}\nLlamado a ponencia: ${event.details.callForPapers}\nDesarrollo con aliados: ${event.details.withAllies}\nLugar: ${event.details.place}\nHora: ${event.details.Hour}\nSoporte requerido: ${event.details.supportRequired}\n\n`;
+                                        message += `<tr>
+                                                        <td><strong>${event.name}</strong></td>
+                                                        <td>${event.details.callForPapers}</td>
+                                                        <td>${event.details.withAllies}</td>
+                                                        <td>${event.details.place}</td>
+                                                        <td>${event.details.Hour}</td>
+                                                        <td>${event.details.supportRequired}</td>
+                                                    </tr>`;
                                     });
+                                    message += '</table>';
                                 } else {
-                                    message += 'No hay eventos programados para este día.';
+                                    message += '<p>No hay eventos programados para este día.</p>';
                                 }
-                                alert(message);
+                                eventDetails.innerHTML = message;
+                                eventModal.style.display = 'block';
                             });
                         }
 
@@ -361,13 +449,24 @@
                 eventNameDiv.textContent = eventName;
 
                 eventNameDiv.addEventListener('click', () => {
-                    let message = `${eventName} - Detalles de los eventos:\n\n`;
+                    let message = `<h3>${eventName} - Detalles de los eventos:</h3>`;
+                    message += '<table class="modal-table">';
+                    message += '<tr><th>Fecha</th><th>Llamado a ponencia</th><th>Desarrollo con aliados</th><th>Lugar</th><th>Hora</th><th>Soporte requerido</th></tr>';
                     eventsGroupedByName[eventName].forEach(event => {
                         event.dates.forEach(date => {
-                            message += `Fecha: ${date}\nLlamado a ponencia: ${event.details.callForPapers}\nDesarrollo con aliados: ${event.details.withAllies}\nLugar: ${event.details.place}\nHora: ${event.details.Hour}\nSoporte requerido: ${event.details.supportRequired}\n\n`;
+                            message += `<tr>
+                                            <td>${date}</td>
+                                            <td>${event.details.callForPapers}</td>
+                                            <td>${event.details.withAllies}</td>
+                                            <td>${event.details.place}</td>
+                                            <td>${event.details.Hour}</td>
+                                            <td>${event.details.supportRequired}</td>
+                                        </tr>`;
                         });
                     });
-                    alert(message);
+                    message += '</table>';
+                    eventDetails.innerHTML = message;
+                    eventModal.style.display = 'block';
                 });
 
                 eventDiv.appendChild(eventColorDiv);
@@ -377,9 +476,20 @@
             });
         }
 
+        closeModal.onclick = function() {
+            eventModal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == eventModal) {
+                eventModal.style.display = 'none';
+            }
+        }
+
         createCalendar(2025);
         createEventList();
     </script>
 </body>
 </html>
+
 
